@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="A novel approach to 3D ultrasound reconstruction from a reduced set of elevation planes using diffusion models, achieving both high-quality and high-volume rate imaging.">
+  <meta property="og:title" content="High Volume Rate 3D Ultrasound Reconstruction with Diffusion Models"/>
+  <meta property="og:description" content="We introduce a diffusion model-based method for reconstructing 3D ultrasound volumes from undersampled elevation planes, outperforming traditional and deep learning interpolation methods in quality and downstream tasks."/>
+  <meta property="og:url" content="https://3d-ultrasound-diffusion.github.io"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/images/overview.svg" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="High Volume Rate 3D Ultrasound Reconstruction with Diffusion Models">
+  <meta name="twitter:description" content="Diffusion models enable high-quality, high-volume rate 3D ultrasound reconstruction from undersampled data, surpassing existing interpolation methods.">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/overview.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="3D ultrasound, diffusion models, medical imaging, volumetric reconstruction, image quality, deep learning, interpolation, speckle tracking, uncertainty quantification, cardiac ultrasound">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>High Volume Rate 3D Ultrasound Reconstruction with Diffusion Models</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="stylesheet" href="https://cdn.knightlab.com/libs/juxtapose/latest/css/juxtapose.css">
+  <link rel="stylesheet" href="static/css/copybutton.css">
+
+  <script src="https://cdn.knightlab.com/libs/juxtapose/latest/js/juxtapose.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+  <script src="static/js/copybutton.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">High Volume Rate 3D Ultrasound Reconstruction with Diffusion Models</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://tristan-deep.github.io/" target="_blank">Tristan S.W. Stevens</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://oisinnolan.github.io/" target="_blank">Oisín Nolan</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/oudomsomphone" target="_blank">Oudom Somphone</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?hl=en&user=BrY9ygYAAAAJ" target="_blank">Jean-Luc Robert</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="https://www.tue.nl/en/research/researchers/ruud-van-sloun/" target="_blank">Ruud J.G. van Sloun</a><sup>1</sup>
+              </span>
+              </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block"><sup>1</sup>Eindhoven University of Technology<br><sup>2</sup>Philips Research</span>
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                         <!-- Arxiv PDF link -->
+                      <span class="link-block">
+                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+                    <!-- Supplementary PDF link
+                    <span class="link-block">
+                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Supplementary</span>
+                    </a>
+                  </span> -->
+
+                  <!-- Github link -->
+                  <span class="link-block">
+                    <a href="#Code"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract Link -->
+                <!-- <span class="link-block">
+                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> -->
+              <span class="link-block">
+                <a href="#BibTeX"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                  <i class="ai ai-obp"></i>
+                  </span>
+                  <span>BibTex</span>
+                </a>
+              </span>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Teaser image-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="static/images/elevation_volume_sweep.gif" alt="3D ultrasound volume sweep" style="width:70vw; max-width:70vw; margin-left:calc(-35vw + 50%); margin-right:calc(-35vw + 50%); display:block;">
+      <h2 class="subtitle has-text-centered">
+        Animation of a sweep through a 3D ultrasound volume, comparing multiple reconstruction methods.
+      </h2>
+      <img src="static/images/elevation_time_sweep.gif" alt="3D ultrasound volume sweep" style="width:70vw; max-width:70vw; margin-left:calc(-35vw + 50%); margin-right:calc(-35vw + 50%); display:block;">
+      <h2 class="subtitle has-text-centered">
+        Animation of a single elevation plane over time, comparing multiple reconstruction methods.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End teaser image -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Three-dimensional ultrasound enables real-time volumetric visualization of anatomical structures. Unlike traditional 2D ultrasound, 3D imaging reduces the reliance on precise probe orientation, potentially making ultrasound more accessible to clinicians with varying levels of experience as well as improving automated measurements and post-exam analysis. However, achieving both high volume rates and high image quality remains a significant challenge. While 3D diverging waves can provide high volume rates, they suffer from limited tissue harmonic generation and increased multipath effects, which degrade image quality. One compromise is to retain the focusing in elevation while leveraging unfocused diverging waves in the lateral direction to reduce the amount of transmissions per elevation plane. Reaching the volume rates achieved by full 3D diverging waves, however, requires dramatically undersampling the number of elevation planes. Subsequently, to render the full volume, simple interpolation techniques are applied. This paper introduces a novel approach to 3D ultrasound reconstruction from a reduced set of elevation planes by employing diffusion models to achieve both high-quality and high-volume rate imaging. Comparative analyses demonstrate the effectiveness of diffusion models in surpassing existing interpolation methods, substantially pushing the boundaries of current 3D ultrasound. We compare to both traditional and supervised deep learning-based interpolation methods on a 3D cardiac ultrasound dataset. Our results show that diffusion model-based reconstruction consistently outperforms the baselines in image quality and in downstream tasks such as speckle tracking. Additionally, we accelerate inference by leveraging the temporal consistency inherent in volumetric sequences. Finally, we explore the robustness of the proposed method by exploiting the probabilistic nature of diffusion posterior sampling to quantify reconstruction uncertainty and demonstrate improved recall on out-of-distribution data with synthetic anomalies under strong subsampling.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<section class="section" id="Framework">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Framework</h2>
+    <p>
+      Overview of the training and inference pipeline for diffusion-based interpolation of 3D ultrasound volumes. A 2D score-based prior is learned from fully sampled elevation (B-plane) slices extracted from the training dataset. At inference time, this generative prior guides the posterior sampling process to reconstruct from subsampled B-planes.
+    </p>
+  </div>
+  <div class="container is-max-desktop has-text-centered">
+    <img src="static/images/overview.svg" alt="Overview diagram" style="width:80%; max-width:800px;">
+    <h2 class="subtitle has-text-centered">
+      Overview of the training and inference pipeline for diffusion-based interpolation of 3D ultrasound volumes.
+    </h2>
+  </div>
+</section>
+
+<!-- BEGIN: Method Comparison Slider -->
+<section class="section" id="method-comparison">
+  <div class="container is-max-desktop">
+    <h2 class="title">Compare Methods</h2>
+    <p>
+      Compare different 3D ultrasound reconstruction methods side by side using the slider below. All images are reconstructed with acceleration rate <b>r=3</b>.
+    </p>
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <!-- Centered example dropdown above method selection -->
+        <div class="has-text-centered" style="margin-bottom:1em;">
+          <div style="display:inline-block;">
+            <div class="select is-small is-rounded" style="min-width:130px;">
+              <select id="example-dropdown">
+                <option>Loading examples...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="has-text-centered" style="margin-bottom:1em;">
+          <div style="display:inline-flex; align-items:center; gap:0.5em;">
+            <div class="select is-small is-rounded" style="min-width:110px;">
+              <select id="juxtapose-method-left"></select>
+            </div>
+            <span style="font-weight:500; font-size:1em;">vs</span>
+            <div class="select is-small is-rounded" style="min-width:110px;">
+              <select id="juxtapose-method-right"></select>
+            </div>
+          </div>
+        </div>
+        <div class="has-text-centered" style="margin-bottom:1em;">
+          <label for="frame-slider" style="margin-right:0.5em;">B-plane:</label>
+          <div style="display:inline-flex; align-items:center; gap:0.5em; width:65%;">
+            <input id="frame-slider" class="slider is-small is-rounded" step="1" min="0" max="19" value="0" type="range" style="flex:1;">
+            <span id="frame-slider-value" style="min-width:2em; text-align:center;">0</span>
+          </div>
+        </div>
+        <div id="juxtapose-slider-container" style="max-width:600px; margin:0 auto;"></div>
+      </div>
+    </div>
+    <p class="has-text-centered" style="margin-top:1em;">Drag the slider to compare two reconstruction methods side by side. Use the slider to select the B-plane inside the 3D volume.</p>
+  </div>
+</section>
+<!-- END: Method Comparison Slider -->
+
+
+<section class="section" id="Code">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Code</h2>
+    <p>
+      The code for this project will be added soon.
+    </p>
+  </div>
+</section>
+
+
+<!--BibTeX citation -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <div style="position:relative;">
+      <button class="button is-small is-rounded has-background-white" id="copy-bibtex-btn"
+        style="position:absolute; top:0.7em; right:0.7em; z-index:2; box-shadow:0 2px 8px rgba(0,0,0,0.08); border:1px solid #ddd;">
+        <span class="icon is-small" style="color:#363636;">
+          <i class="fas fa-copy"></i>
+        </span>
+      </button>
+      <pre style="white-space:pre-wrap; word-break:break-all; padding-top:2.2em; border-radius:8px; border:1px solid #eee; background:#fafbfc;">
+<code id="bibtex-code">@article{stevens2025high,
+  title={High Volume Rate 3D Ultrasound Reconstruction with Diffusion Models},
+  author={Stevens, Tristan S.W. and Nolan, Oisín and Somphone, Oudom and
+    Robert, Jean-Luc and van Sloun, Ruud J.G.},
+  journal={arXiv preprint arXiv:2406.00000},
+  year={2024}
+}
+</code></pre>
+    </div>
+  </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
