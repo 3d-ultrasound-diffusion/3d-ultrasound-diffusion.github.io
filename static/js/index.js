@@ -105,8 +105,8 @@ $(document).ready(function() {
                 $left.append($('<option>').val(m).text(methodLabels[m] || m));
                 $right.append($('<option>').val(m).text(methodLabels[m] || m));
             });
-            $left.val(methods[0]);
-            $right.val(methods[1]);
+            $left.val('nearest');
+            $right.val('diffusion');
         }
 
         function populateExampleDropdown() {
