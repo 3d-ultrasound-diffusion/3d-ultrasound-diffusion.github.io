@@ -19,68 +19,81 @@ $(document).ready(function() {
         var currentExample = Object.keys(exampleManifest)[0];
         var currentFrame = null;
 
-        function getImagePath(example, method, frame) {
-            return "static/images/comparisons/" + example + "/" + method + "_az_" + frame + ".gif";
-        }
 
-        function preloadImages(srcs, callback) {
-            var loaded = 0;
-            var total = srcs.length;
-            var done = false;
-            srcs.forEach(function(src) {
-                var img = new window.Image();
-                img.onload = img.onerror = function() {
-                    loaded++;
-                    if (!done && loaded === total) {
-                        done = true;
-                        callback();
-                    }
-                };
-                img.src = src;
-            });
+        function getImagePath(example, method, frame) {
+            return `static/images/comparisons/${example}/${method}_az_${frame}.gif`;
         }
 
         function updateJuxtaposeSlider(example, left, right, frame) {
-            var leftSrc = getImagePath(example, left, frame);
-            var rightSrc = getImagePath(example, right, frame);
-            var startingPosition = "50%";
-            var $oldSlider = $('#juxtapose-slider');
+            // Use a requestId to ensure only the latest request updates the UI
+            if (!window._juxtaposeRequestId) window._juxtaposeRequestId = 0;
+            window._juxtaposeRequestId++;
+            const requestId = window._juxtaposeRequestId;
+
+            const leftSrc = getImagePath(example, left, frame);
+            const rightSrc = getImagePath(example, right, frame);
+            let startingPosition = "50%";
+            const $oldSlider = $('#juxtapose-slider');
             if ($oldSlider.length) {
-                var $handle = $oldSlider.find('.jx-handle');
+                const $handle = $oldSlider.find('.jx-handle');
                 if ($handle.length) {
-                    var handleLeft = parseFloat($handle.css('left'));
-                    var width = $oldSlider.width();
+                    const handleLeft = parseFloat($handle.css('left'));
+                    const width = $oldSlider.width();
                     if (width > 0) {
-                        var percent = Math.round((handleLeft / width) * 100);
+                        const percent = Math.round((handleLeft / width) * 100);
                         startingPosition = percent + "%";
                     }
                 }
             }
-            preloadImages([leftSrc, rightSrc], function() {
-                $('#juxtapose-slider').remove();
-                var sliderDiv = $('<div></div>').attr('id', 'juxtapose-slider').css('width', '100%');
-                $('#juxtapose-slider-container').append(sliderDiv);
-                setTimeout(function() {
-                    new juxtapose.JXSlider('#juxtapose-slider', [
-                        {
-                            src: leftSrc,
-                            label: methodLabels[left] || left,
-                            credit: ''
-                        },
-                        {
-                            src: rightSrc,
-                            label: methodLabels[right] || right,
-                            credit: ''
-                        }
-                    ], {
-                        animate: true,
-                        showLabels: true,
-                        showCredits: false,
-                        startingPosition: startingPosition,
-                        makeResponsive: true
-                    });
-                }, 0);
-            });
+            const $container = $('#juxtapose-slider-container');
+            // Use a single loader overlay
+            let $loader = $container.find('.juxtapose-loader');
+            if ($loader.length === 0) {
+                $loader = $('<div class="juxtapose-loader has-text-centered" style="margin:1em 0; position:absolute; left:0; right:0; pointer-events:none;"><span class="loader"></span> Loading...</div>');
+                $loader.css({top: $container.position().top + 20, zIndex: 10});
+                $container.append($loader);
+            }
+            $loader.show();
+
+            // Preload both images and only update if still latest request
+            let loaded = 0;
+            function tryInitJuxtapose() {
+                loaded++;
+                if (loaded === 2 && requestId === window._juxtaposeRequestId) {
+                    $loader.hide();
+                    $('#juxtapose-slider').remove();
+                    const sliderDiv = $('<div></div>').attr('id', 'juxtapose-slider').css('width', '100%');
+                    $container.append(sliderDiv);
+                    setTimeout(function() {
+                        new juxtapose.JXSlider('#juxtapose-slider', [
+                            {
+                                src: leftSrc,
+                                label: methodLabels[left] || left,
+                                credit: ''
+                            },
+                            {
+                                src: rightSrc,
+                                label: methodLabels[right] || right,
+                                credit: ''
+                            }
+                        ], {
+                            animate: true,
+                            showLabels: true,
+                            showCredits: false,
+                            startingPosition: startingPosition,
+                            makeResponsive: true
+                        });
+                    }, 0);
+                }
+            }
+            const imgLeft = new window.Image();
+            const imgRight = new window.Image();
+            imgLeft.onload = tryInitJuxtapose;
+            imgRight.onload = tryInitJuxtapose;
+            imgLeft.onerror = tryInitJuxtapose;
+            imgRight.onerror = tryInitJuxtapose;
+            imgLeft.src = leftSrc;
+            imgRight.src = rightSrc;
         }
 
         function populateDropdowns() {
@@ -218,4 +231,12 @@ $(document).ready(function() {
     }).fail(function() {
         alert("Failed to load example manifest.");
     });
+
+    // Loader CSS for spinner
+    if (!window._juxtaposeLoaderStyle) {
+        var loaderStyle = document.createElement('style');
+        loaderStyle.innerHTML = '.loader { border: 4px solid #f3f3f3; border-top: 4px solid #363636; border-radius: 50%; width: 24px; height: 24px; display:inline-block; animation: spin 1s linear infinite; margin-right:8px; } @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} } .juxtapose-loader { transition: opacity 0.2s; }';
+        document.head.appendChild(loaderStyle);
+        window._juxtaposeLoaderStyle = true;
+    }
 });
