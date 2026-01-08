@@ -1,0 +1,16 @@
+{
+  "sample_name": "IM_0041_15",
+  "methods": [
+    "clean",
+    "nearest",
+    "linear",
+    "supervised",
+    "neuralfield"
+  ],
+  "n_azimuth_slices": 80,
+  "n_frames": 4,
+  "video_width": 259,
+  "video_height": 167,
+  "fps": 8,
+  "file_pattern": "{method}_az_{azimuth_idx}.webm"
+}

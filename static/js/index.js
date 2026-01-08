@@ -1,242 +1,350 @@
 window.HELP_IMPROVE_VIDEOJS = false;
 
-
 $(document).ready(function() {
-    var exampleManifest = {};
-    var exampleLabels = {};
-    var methodLabels = {};
-    var manifestLoaded = false;
+    let exampleManifest = {};
+    let exampleLabels = {};
+    let methodLabels = {};
+    let currentExample = null;
+    let currentLeftVideo = null;
+    let currentRightVideo = null;
+    let isDragging = false;
+    let isUpdating = false;
 
-    function initializeUI() {
-        var methods = [
-            "clean_images",
-            "diffusion",
-            "supervised",
-            "linear",
-            "nearest"
-        ];
+    const methods = [
+        "clean",
+        "diffusion",
+        "supervised",
+        "linear",
+        "nearest",
+        "neuralfield"
+    ];
 
-        var currentExample = Object.keys(exampleManifest)[0];
-        var currentFrame = null;
+    function getVideoPath(example, method, frame) {
+        return `static/images/comparisons/${example}/${method}_az_${frame}.webm`;
+    }
 
+    function showLoader(show = true) {
+        // Loader removed for performance
+    }
 
-        function getImagePath(example, method, frame) {
-            return `static/images/comparisons/${example}/${method}_az_${frame}.gif`;
-        }
+    function syncVideos() {
+        if (currentLeftVideo && currentRightVideo) {
+            // Sync playback
+            currentLeftVideo.addEventListener('play', () => {
+                if (currentRightVideo.paused) currentRightVideo.play();
+            });
+            currentRightVideo.addEventListener('play', () => {
+                if (currentLeftVideo.paused) currentLeftVideo.play();
+            });
 
-        function updateJuxtaposeSlider(example, left, right, frame) {
-            // Use a requestId to ensure only the latest request updates the UI
-            if (!window._juxtaposeRequestId) window._juxtaposeRequestId = 0;
-            window._juxtaposeRequestId++;
-            const requestId = window._juxtaposeRequestId;
-
-            const leftSrc = getImagePath(example, left, frame);
-            const rightSrc = getImagePath(example, right, frame);
-            let startingPosition = "50%";
-            const $oldSlider = $('#juxtapose-slider');
-            if ($oldSlider.length) {
-                const $handle = $oldSlider.find('.jx-handle');
-                if ($handle.length) {
-                    const handleLeft = parseFloat($handle.css('left'));
-                    const width = $oldSlider.width();
-                    if (width > 0) {
-                        const percent = Math.round((handleLeft / width) * 100);
-                        startingPosition = percent + "%";
-                    }
+            // Keep them in sync during playback
+            currentLeftVideo.addEventListener('timeupdate', () => {
+                if (!isDragging && Math.abs(currentLeftVideo.currentTime - currentRightVideo.currentTime) > 0.1) {
+                    currentRightVideo.currentTime = currentLeftVideo.currentTime;
                 }
-            }
-            const $container = $('#juxtapose-slider-container');
-            // Use a single loader overlay
-            let $loader = $container.find('.juxtapose-loader');
-            if ($loader.length === 0) {
-                $loader = $('<div class="juxtapose-loader has-text-centered" style="margin:1em 0; position:absolute; left:0; right:0; pointer-events:none;"><span class="loader"></span> Loading...</div>');
-                $loader.css({top: $container.position().top + 20, zIndex: 10});
-                $container.append($loader);
-            }
-            $loader.show();
-
-            // Preload both images and only update if still latest request
-            let loaded = 0;
-            function tryInitJuxtapose() {
-                loaded++;
-                if (loaded === 2 && requestId === window._juxtaposeRequestId) {
-                    $loader.hide();
-                    $('#juxtapose-slider').remove();
-                    const sliderDiv = $('<div></div>').attr('id', 'juxtapose-slider').css('width', '100%');
-                    $container.append(sliderDiv);
-                    setTimeout(function() {
-                        new juxtapose.JXSlider('#juxtapose-slider', [
-                            {
-                                src: leftSrc,
-                                label: methodLabels[left] || left,
-                                credit: ''
-                            },
-                            {
-                                src: rightSrc,
-                                label: methodLabels[right] || right,
-                                credit: ''
-                            }
-                        ], {
-                            animate: true,
-                            showLabels: true,
-                            showCredits: false,
-                            startingPosition: startingPosition,
-                            makeResponsive: true
-                        });
-                    }, 0);
-                }
-            }
-            const imgLeft = new window.Image();
-            const imgRight = new window.Image();
-            imgLeft.onload = tryInitJuxtapose;
-            imgRight.onload = tryInitJuxtapose;
-            imgLeft.onerror = tryInitJuxtapose;
-            imgRight.onerror = tryInitJuxtapose;
-            imgLeft.src = leftSrc;
-            imgRight.src = rightSrc;
-        }
-
-        function populateDropdowns() {
-            var $left = $('#juxtapose-method-left');
-            var $right = $('#juxtapose-method-right');
-            $left.empty();
-            $right.empty();
-            methods.forEach(function(m) {
-                $left.append($('<option>').val(m).text(methodLabels[m] || m));
-                $right.append($('<option>').val(m).text(methodLabels[m] || m));
-            });
-            $left.val('nearest');
-            $right.val('diffusion');
-        }
-
-        function populateExampleDropdown() {
-            var $example = $('#example-dropdown');
-            $example.empty();
-            Object.keys(exampleManifest).forEach(function(ex) {
-                $example.append($('<option>').val(ex).text(exampleLabels[ex] || ex));
-            });
-            $example.val(currentExample);
-        }
-
-        function setFrameSlider(example, frame) {
-            var indices = exampleManifest[example];
-            var $frameSlider = $('#frame-slider');
-            var $frameValue = $('#frame-slider-value');
-            if (frame < 0) frame = 0;
-            if (frame >= indices.length) frame = indices.length - 1;
-            $frameSlider.attr('min', 0);
-            $frameSlider.attr('max', indices.length - 1);
-            $frameSlider.val(frame);
-            $frameValue.text(indices[frame]);
-        }
-
-        function getCurrentFrameIndex(example) {
-            var indices = exampleManifest[example];
-            var $frameSlider = $('#frame-slider');
-            var idx = parseInt($frameSlider.val());
-            if (isNaN(idx) || idx < 0) idx = 0;
-            if (idx >= indices.length) idx = indices.length - 1;
-            return idx;
-        }
-
-        if ($('#juxtapose-slider-container').length) {
-            if ($('#example-dropdown').length === 0) {
-                var $dropdown = $('<div class="select is-small is-rounded" style="min-width:130px; margin-bottom:1em;"><select id="example-dropdown"></select></div>');
-                $('#juxtapose-slider-container').before($dropdown);
-            }
-
-            populateExampleDropdown();
-            populateDropdowns();
-
-            function resetFrameSlider(example) {
-                var indices = exampleManifest[example];
-                var mid = Math.floor(indices.length / 2);
-                setFrameSlider(example, mid);
-                currentFrame = mid;
-            }
-
-            resetFrameSlider(currentExample);
-
-            updateJuxtaposeSlider(
-                currentExample,
-                $('#juxtapose-method-left').val(),
-                $('#juxtapose-method-right').val(),
-                exampleManifest[currentExample][getCurrentFrameIndex(currentExample)]
-            );
-
-            function getCurrentMethods() {
-                return [
-                    $('#juxtapose-method-left').val(),
-                    $('#juxtapose-method-right').val()
-                ];
-            }
-
-            $('#example-dropdown').on('change', function() {
-                currentExample = $(this).val();
-                resetFrameSlider(currentExample);
-                var [left, right] = getCurrentMethods();
-                updateJuxtaposeSlider(
-                    currentExample,
-                    left,
-                    right,
-                    exampleManifest[currentExample][getCurrentFrameIndex(currentExample)]
-                );
-            });
-
-            $('#juxtapose-method-left, #juxtapose-method-right').on('change', function() {
-                var left = $('#juxtapose-method-left').val();
-                var right = $('#juxtapose-method-right').val();
-                if (left === right) {
-                    var idx = methods.indexOf(left);
-                    var other = (idx + 1) % methods.length;
-                    if ($(this).attr("id") === "juxtapose-method-left") {
-                        $('#juxtapose-method-right').val(methods[other]);
-                    } else {
-                        $('#juxtapose-method-left').val(methods[other]);
-                    }
-                    left = $('#juxtapose-method-left').val();
-                    right = $('#juxtapose-method-right').val();
-                }
-                updateJuxtaposeSlider(
-                    currentExample,
-                    left,
-                    right,
-                    exampleManifest[currentExample][getCurrentFrameIndex(currentExample)]
-                );
-            });
-
-            $('#frame-slider').on('input change', function() {
-                var idx = parseInt($(this).val());
-                var indices = exampleManifest[currentExample];
-                if (isNaN(idx) || idx < 0) idx = 0;
-                if (idx >= indices.length) idx = indices.length - 1;
-                $('#frame-slider-value').text(indices[idx]);
-                var [left, right] = getCurrentMethods();
-                updateJuxtaposeSlider(
-                    currentExample,
-                    left,
-                    right,
-                    indices[idx]
-                );
             });
         }
     }
 
+    function prefetchCurrentVideos() {
+        // Prefetch all frames for current example and selected methods
+        const leftMethod = $('#juxtapose-method-left').val();
+        const rightMethod = $('#juxtapose-method-right').val();
+        const frames = exampleManifest[currentExample];
+
+        if (!frames) return;
+
+        // Prefetch in background
+        frames.forEach(frame => {
+            const leftSrc = getVideoPath(currentExample, leftMethod, frame);
+            const rightSrc = getVideoPath(currentExample, rightMethod, frame);
+
+            // Create hidden video elements to trigger browser caching
+            const leftVideo = document.createElement('video');
+            leftVideo.preload = 'auto';
+            leftVideo.src = leftSrc;
+
+            const rightVideo = document.createElement('video');
+            rightVideo.preload = 'auto';
+            rightVideo.src = rightSrc;
+        });
+    }
+
+    async function updateVideoComparison(example, left, right, frame) {
+        const leftSrc = getVideoPath(example, left, frame);
+        const rightSrc = getVideoPath(example, right, frame);
+
+        const $container = $('#juxtapose-slider-container');
+
+        // Preserve slider position
+        let sliderPosition = 50;
+        const $oldComparison = $container.find('.video-comparison');
+        if ($oldComparison.length) {
+            const $handle = $oldComparison.find('.comparison-handle');
+            if ($handle.length) {
+                sliderPosition = parseFloat($handle.css('left')) / $oldComparison.width() * 100;
+            }
+        }
+
+        // Create new video elements in background and wait for them to load
+        const leftVideo = document.createElement('video');
+        leftVideo.muted = true;
+        leftVideo.loop = true;
+        leftVideo.playsInline = true;
+        leftVideo.src = leftSrc;
+
+        const rightVideo = document.createElement('video');
+        rightVideo.muted = true;
+        rightVideo.loop = true;
+        rightVideo.playsInline = true;
+        rightVideo.src = rightSrc;
+
+        // Wait for both videos to load metadata before replacing
+        await Promise.all([
+            new Promise(resolve => {
+                if (leftVideo.readyState >= 2) resolve();
+                else leftVideo.onloadedmetadata = resolve;
+            }),
+            new Promise(resolve => {
+                if (rightVideo.readyState >= 2) resolve();
+                else rightVideo.onloadedmetadata = resolve;
+            })
+        ]);
+
+        // Calculate proper height
+        const currentHeight = $oldComparison.length ? $oldComparison.height() : 500;
+        let newHeight = currentHeight;
+        if (leftVideo.videoHeight && leftVideo.videoWidth) {
+            const aspectRatio = leftVideo.videoHeight / leftVideo.videoWidth;
+            newHeight = $container.width() * aspectRatio;
+        }
+
+        // Now replace old comparison with smooth transition
+        $container.empty();
+
+        // Create comparison HTML
+        const comparisonHTML = `
+            <div class="video-comparison" style="height: ${newHeight}px;">
+                <div class="video-wrapper right-video">
+                    <video muted loop playsinline></video>
+                    <div class="video-label">${methodLabels[right] || right}</div>
+                </div>
+                <div class="video-wrapper left-video" style="clip-path: inset(0 ${100 - sliderPosition}% 0 0);">
+                    <video muted loop playsinline></video>
+                    <div class="video-label">${methodLabels[left] || left}</div>
+                </div>
+                <div class="comparison-handle" style="left: ${sliderPosition}%;">
+                    <div class="jx-control">
+                        <div class="jx-controller">
+                            <div class="jx-arrow jx-left"></div>
+                            <div class="jx-arrow jx-right"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $container.html(comparisonHTML);
+
+        const $comparison = $container.find('.video-comparison');
+        const $leftWrapper = $comparison.find('.left-video');
+        const $handle = $comparison.find('.comparison-handle');
+
+        // Replace the placeholder videos with the loaded ones
+        $leftWrapper.find('video')[0].replaceWith(leftVideo);
+        $comparison.find('.right-video video')[0].replaceWith(rightVideo);
+
+        // Store current videos
+        currentLeftVideo = leftVideo;
+        currentRightVideo = rightVideo;
+
+        // Sync videos
+        syncVideos();
+
+        // Play videos
+        leftVideo.play().catch(() => {});
+        rightVideo.play().catch(() => {});
+
+        // Setup slider interaction
+        function updateSlider(e) {
+            const rect = $comparison[0].getBoundingClientRect();
+            const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+            const percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+
+            $leftWrapper.css('clip-path', `inset(0 ${100 - percent}% 0 0)`);
+            $handle.css('left', percent + '%');
+        }
+
+        $comparison.on('mousedown touchstart', function(e) {
+            e.preventDefault();
+            isDragging = true;
+            updateSlider(e);
+
+            $(document).on('mousemove.comparison touchmove.comparison', updateSlider);
+            $(document).on('mouseup.comparison touchend.comparison', function() {
+                isDragging = false;
+                $(document).off('.comparison');
+            });
+        });
+    }
+
+    function populateDropdowns() {
+        const $left = $('#juxtapose-method-left');
+        const $right = $('#juxtapose-method-right');
+
+        $left.empty();
+        $right.empty();
+
+        methods.forEach(m => {
+            $left.append($('<option>').val(m).text(methodLabels[m] || m));
+            $right.append($('<option>').val(m).text(methodLabels[m] || m));
+        });
+
+        $left.val('nearest');
+        $right.val('diffusion');
+    }
+
+    function populateExampleButtons() {
+        const $buttons = $('#example-buttons');
+        $buttons.empty();
+
+        Object.keys(exampleManifest).forEach(ex => {
+            const $btn = $('<button>').
+                addClass('example-btn').
+                attr('data-example', ex).
+                text(exampleLabels[ex] || ex);
+
+            if (ex === currentExample) {
+                $btn.addClass('active');
+            }
+
+            $buttons.append($btn);
+        });
+
+        // Add click handlers
+        $('.example-btn').on('click', function() {
+            const example = $(this).attr('data-example');
+            if (example === currentExample) return;
+
+            $('.example-btn').removeClass('active');
+            $(this).addClass('active');
+
+            currentExample = example;
+            const frameIndex = setupFrameSlider(currentExample);
+            updateVideoComparison(
+                currentExample,
+                $('#juxtapose-method-left').val(),
+                $('#juxtapose-method-right').val(),
+                exampleManifest[currentExample][frameIndex]
+            );
+
+            // Prefetch new example's videos
+            setTimeout(() => prefetchCurrentVideos(), 100);
+        });
+    }
+
+    function setupFrameSlider(example, frameIndex = null) {
+        const indices = exampleManifest[example];
+        const $frameSlider = $('#frame-slider');
+        const $frameValue = $('#frame-slider-value');
+
+        if (frameIndex === null) {
+            frameIndex = Math.floor(indices.length / 2);
+        }
+
+        frameIndex = Math.max(0, Math.min(frameIndex, indices.length - 1));
+
+        $frameSlider.attr('min', 0);
+        $frameSlider.attr('max', indices.length - 1);
+        $frameSlider.val(frameIndex);
+        $frameValue.text(indices[frameIndex]);
+
+        return frameIndex;
+    }
+
+    function getCurrentFrameIndex() {
+        const indices = exampleManifest[currentExample];
+        const idx = parseInt($('#frame-slider').val());
+        return Math.max(0, Math.min(idx, indices.length - 1));
+    }
+
+    function getCurrentFrame() {
+        const indices = exampleManifest[currentExample];
+        return indices[getCurrentFrameIndex()];
+    }
+
+    function initializeComparison() {
+        if (!$('#juxtapose-slider-container').length) return;
+
+        currentExample = Object.keys(exampleManifest)[0];
+
+        populateExampleButtons();
+        populateDropdowns();
+
+        const frameIndex = setupFrameSlider(currentExample);
+
+        updateVideoComparison(
+            currentExample,
+            $('#juxtapose-method-left').val(),
+            $('#juxtapose-method-right').val(),
+            exampleManifest[currentExample][frameIndex]
+        );
+
+        // Prefetch videos for smooth B-plane sweeping
+        setTimeout(() => prefetchCurrentVideos(), 100);
+
+        // Method dropdown changes
+        $('#juxtapose-method-left, #juxtapose-method-right').on('change', function() {
+            let left = $('#juxtapose-method-left').val();
+            let right = $('#juxtapose-method-right').val();
+
+            // Prevent same method selection
+            if (left === right) {
+                const idx = methods.indexOf(left);
+                const other = methods[(idx + 1) % methods.length];
+                if ($(this).attr("id") === "juxtapose-method-left") {
+                    $('#juxtapose-method-right').val(other);
+                    right = other;
+                } else {
+                    $('#juxtapose-method-left').val(other);
+                    left = other;
+                }
+            }
+
+            updateVideoComparison(currentExample, left, right, getCurrentFrame());
+
+            // Prefetch new method's videos
+            setTimeout(() => prefetchCurrentVideos(), 100);
+        });
+
+        // Frame slider change - update in real-time
+        $('#frame-slider').on('input', function() {
+            const idx = parseInt($(this).val());
+            const indices = exampleManifest[currentExample];
+            $('#frame-slider-value').text(indices[idx]);
+
+            if (!isUpdating) {
+                isUpdating = true;
+                updateVideoComparison(
+                    currentExample,
+                    $('#juxtapose-method-left').val(),
+                    $('#juxtapose-method-right').val(),
+                    indices[idx]
+                ).finally(() => {
+                    isUpdating = false;
+                });
+            }
+        });
+    }
+
+    // Load manifest and initialize
     $.getJSON('static/images/comparisons/manifest.json', function(data) {
         exampleManifest = data.examples;
         exampleLabels = data.labels;
         methodLabels = data.methodLabels || {};
-        manifestLoaded = true;
-        initializeUI();
+        initializeComparison();
     }).fail(function() {
-        alert("Failed to load example manifest.");
+        console.error("Failed to load example manifest.");
+        $('#juxtapose-slider-container').html('<p style="color: #e0e0e0; text-align: center;">Failed to load comparison data.</p>');
     });
-
-    // Loader CSS for spinner
-    if (!window._juxtaposeLoaderStyle) {
-        var loaderStyle = document.createElement('style');
-        loaderStyle.innerHTML = '.loader { border: 4px solid #f3f3f3; border-top: 4px solid #363636; border-radius: 50%; width: 24px; height: 24px; display:inline-block; animation: spin 1s linear infinite; margin-right:8px; } @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} } .juxtapose-loader { transition: opacity 0.2s; }';
-        document.head.appendChild(loaderStyle);
-        window._juxtaposeLoaderStyle = true;
-    }
 });

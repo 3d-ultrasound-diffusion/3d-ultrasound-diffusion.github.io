@@ -49,7 +49,7 @@
   <script src="static/js/copybutton.js"></script>
 </head>
 
-<body>
+<body class="dark-mode">
 
 <!-- Begin Navbar -->
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -75,6 +75,9 @@
           </a>
           <a class="navbar-item" href="https://active-diffusion-subsampling.github.io/">
             Active Diffusion Subsampling
+          </a>
+          <a class="navbar-item" href="https://zea.readthedocs.io">
+            zea: A Toolbox for Cognitive Ultrasound Imaging
           </a>
         </div>
       </div>
@@ -173,39 +176,20 @@
 </section>
 
 
-<!-- Teaser image-->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <img src="static/images/elevation_volume_sweep.gif" alt="3D ultrasound volume sweep" style="width:70vw; max-width:70vw; margin-left:calc(-35vw + 50%); margin-right:calc(-35vw + 50%); display:block;">
-      <h2 class="subtitle has-text-centered">
-        Animation of a sweep through a 3D ultrasound volume, comparing multiple reconstruction methods.
-      </h2>
-      <img src="static/images/elevation_time_sweep.gif" alt="3D ultrasound volume sweep" style="width:70vw; max-width:70vw; margin-left:calc(-35vw + 50%); margin-right:calc(-35vw + 50%); display:block;">
-      <h2 class="subtitle has-text-centered">
-        Animation of a single elevation plane over time, comparing multiple reconstruction methods.
-      </h2>
-    </div>
-  </div>
-</section>
-<!-- End teaser image -->
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
+<section class="section hero" id="abstract">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Three-dimensional ultrasound enables real-time volumetric visualization of anatomical structures. Unlike traditional 2D ultrasound, 3D imaging reduces the reliance on precise probe orientation, potentially making ultrasound more accessible to clinicians with varying levels of experience and improving automated measurements and post-exam analysis. However, achieving both high volume rates and high image quality remains a significant challenge. While 3D diverging waves can provide high volume rates, they suffer from limited tissue harmonic generation and increased multipath effects, which degrade image quality. One compromise is to retain the focusing in elevation while leveraging unfocused diverging waves in the lateral direction to reduce the number of transmissions per elevation plane. Reaching the volume rates achieved by full 3D diverging waves, however, requires dramatically undersampling the number of elevation planes. Subsequently, to render the full volume, simple interpolation techniques are applied. This paper introduces a novel approach to 3D ultrasound reconstruction from a reduced set of elevation planes by employing diffusion models (DMs) to achieve increased spatial and temporal resolution. We compare both traditional and supervised deep learning-based interpolation methods on a 3D cardiac ultrasound dataset. Our results show that DM-based reconstruction consistently outperforms the baselines in image quality and downstream task performance. Additionally, we accelerate inference by leveraging the temporal consistency inherent to ultrasound sequences. Finally, we explore the robustness of the proposed method by exploiting the probabilistic nature of diffusion posterior sampling to quantify reconstruction uncertainty and demonstrate improved recall on out-of-distribution data with synthetic anomalies under strong subsampling.
+            Three-dimensional ultrasound enables real-time volumetric visualization of anatomical structures. Unlike traditional 2D ultrasound, 3D imaging reduces reliance on precise probe orientation, potentially making ultrasound more accessible to clinicians with varying levels of experience and improving automated measurements and post-exam analysis. However, achieving both high volume rates and high image quality remains a significant challenge. While 3D diverging waves can provide high volume rates, they suffer from limited tissue harmonic generation and increased multipath effects, which degrade image quality. One compromise is to retain focus in elevation while leveraging unfocused diverging waves in the lateral direction to reduce the number of transmissions per elevation plane. Reaching the volume rates achieved by full 3D diverging waves, however, requires dramatically undersampling the number of elevation planes. Subsequently, to render the full volume, simple interpolation techniques are applied. This paper introduces a novel approach to 3D ultrasound reconstruction from a reduced set of elevation planes by employing diffusion models (DMs) to achieve increased spatial and temporal resolution. We compare both traditional and supervised deep learning-based interpolation methods on a 3D cardiac ultrasound dataset. Our results show that DM-based reconstruction consistently outperforms the baselines in image quality and downstream task performance. Additionally, we accelerate inference by leveraging the temporal consistency inherent to ultrasound sequences. Finally, we explore the robustness of the proposed method by exploiting the probabilistic nature of diffusion posterior sampling to quantify reconstruction uncertainty and demonstrate improved recall on out-of-distribution data with synthetic anomalies under strong subsampling.
           </p>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!-- End paper abstract -->
 
 
 <section class="section" id="Framework">
@@ -216,84 +200,96 @@
     </p>
   </div>
   <div class="container is-max-desktop has-text-centered">
-    <img src="static/images/overview.svg" alt="Overview diagram" style="width:80%; max-width:800px;">
-    <h2 class="subtitle has-text-centered">
-      Overview of the training and inference pipeline for diffusion-based interpolation of 3D ultrasound volumes.
-    </h2>
+    <div style="display: inline-block; max-width: 90%;">
+      <img src="static/images/overview.gif" alt="Overview diagram" style="width: 100%; max-width: 1000px;">
+      <h2 class="subtitle" style="text-align: center; margin-top: -2rem;">
+        Overview of the training and inference pipeline for diffusion-based
+        of 3D ultrasound volumes.
+      </h2>
+    </div>
   </div>
 </section>
 
-<!-- BEGIN: Method Comparison Slider -->
+<section class="section" id="Uncertainty">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Uncertainty</h2>
+    <p>
+      Many interpolation methods provide only a single <em>point-estimate</em> reconstruction, failing to represent the uncertainty inherent to the inverse problem. Given the probabilistic nature of diffusion posterior sampling, however, our method can quantify the uncertainty present in its reconstructions. Quantifying the uncertainty can help mitigate <em>hallucinations</em>, in which a model generates one of many plausible anatomies that may be convincing but not truthful. Or, more critically, it overlooks an anatomical feature that is, in fact, present. In our paper, we describe two methods to quantify and communicate this uncertainty. We build on the well-established idea of combining samples from the posterior distribution. Our contribution lies in adapting this principle to 3D ultrasound reconstruction and proposing visualization strategies that convey the uncertainty in an interpretable manner to the operator.
+    </p>
+  </div>
+  <div class="container is-max-desktop has-text-centered">
+    <div style="display: inline-block; max-width: 90%;">
+      <img src="static/images/uncertainty.gif" alt="Uncertainty comparison" style="width: 100%; max-width: 1000px; border-radius: 32px; margin: 1rem 0; padding: 1.5rem; background-color: #000;">
+      <h2 class="subtitle" style="text-align: left; margin-top: 0rem;">
+        A single posterior sample, the posterior mean and variance over multiple samples, and the composite images for reconstructions with fractions of the elevation planes acquired (r = 8×, 4×, 2×). It is clear that the posterior samples vary more in the unmeasured regions of tissue, and that acquiring more elevation planes reduces the overall uncertainty and boosts the reconstruction quality.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
 <section class="section" id="method-comparison">
-  <div class="container is-max-desktop">
+  <div class="container is-max-desktop content">
     <h2 class="title">Compare Methods</h2>
     <p>
       Compare different 3D ultrasound reconstruction methods side by side using the slider below. All images are reconstructed with acceleration rate <b>r=3</b>.
     </p>
-    <div class="columns is-centered">
-      <div class="column is-half">
-        <!-- Centered example dropdown above method selection -->
-        <div class="has-text-centered" style="margin-bottom:1em;">
-          <div style="display:inline-block;">
-            <div class="select is-small is-rounded" style="min-width:130px;">
-              <select id="example-dropdown">
-                <option>Loading examples...</option>
-              </select>
-            </div>
+    <div class="comparison-controls" style="margin: 2rem 0;">
+      <!-- Example buttons -->
+      <div class="control-group">
+        <label>Example:</label>
+        <div id="example-buttons" style="display: inline-flex; gap: 0.5rem;">
+          <!-- Buttons will be populated by JS -->
+        </div>
+      </div>
+      <!-- Method dropdowns -->
+      <div class="control-group">
+        <label>Methods:</label>
+        <div style="display:inline-flex; align-items:center; gap:0.5em;">
+          <div class="select is-small is-rounded">
+            <select id="juxtapose-method-left"></select>
+          </div>
+          <span style="font-weight:500;">vs</span>
+          <div class="select is-small is-rounded">
+            <select id="juxtapose-method-right"></select>
           </div>
         </div>
-        <div class="has-text-centered" style="margin-bottom:1em;">
-          <div style="display:inline-flex; align-items:center; gap:0.5em;">
-            <div class="select is-small is-rounded" style="min-width:110px;">
-              <select id="juxtapose-method-left"></select>
-            </div>
-            <span style="font-weight:500; font-size:1em;">vs</span>
-            <div class="select is-small is-rounded" style="min-width:110px;">
-              <select id="juxtapose-method-right"></select>
-            </div>
-          </div>
-        </div>
-        <div class="has-text-centered" style="margin-bottom:1em;">
-          <label for="frame-slider" style="margin-right:0.5em;">B-plane:</label>
-          <div style="display:inline-flex; align-items:center; gap:0.5em; width:65%;">
-            <input id="frame-slider" class="slider is-small is-rounded" step="1" min="0" max="19" value="0" type="range" style="flex:1;">
-            <span id="frame-slider-value" style="min-width:2em; text-align:center;">0</span>
-          </div>
-        </div>
-        <div id="juxtapose-slider-container" style="max-width:600px; margin:0 auto;"></div>
+      </div>
+      <!-- Frame slider -->
+      <div class="control-group" style="flex: 1; min-width: 250px; flex-direction: column; align-items: flex-start;">
+        <label for="frame-slider">B-plane: <span id="frame-slider-value">0</span></label>
+        <input id="frame-slider" class="slider is-small is-rounded" step="1" min="0" max="19" value="0" type="range" style="width: 100%;">
       </div>
     </div>
-    <p class="has-text-centered" style="margin-top:1em;">Drag the slider to compare two reconstruction methods side by side. Use the slider to select the B-plane inside the 3D volume.</p>
+    <div id="juxtapose-slider-container" style="max-width:700px; margin:2rem auto; position:relative; background-color: #000; border-radius: 32px; overflow: hidden;"></div>
   </div>
 </section>
-<!-- END: Method Comparison Slider -->
-
 
 <section class="section" id="Code">
   <div class="container is-max-desktop content">
     <h2 class="title">Code</h2>
     <p>
-      The code for this project will be added soon.
+      The dedicated code repository for this project will be added soon. All tools necessary to recreate results are already available in the <code>zea</code> toolbox for cognitive ultrasound imaging, see <a href="https://github.com/tue-bmd/zea" target="_blank">https://github.com/tue-bmd/zea</a>. A good example notebook to get started with 3D ultrasound reconstruction using diffusion models is available at <a href="https://zea.readthedocs.io/en/latest/notebooks/models/diffusion_model_example.html" target="_blank">here</a>.
     </p>
   </div>
 </section>
 
 
-<!--BibTeX citation -->
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
     <div style="position:relative;">
-      <button class="button is-small is-rounded has-background-white" id="copy-bibtex-btn"
-        style="position:absolute; top:0.7em; right:0.7em; z-index:2; box-shadow:0 2px 8px rgba(0,0,0,0.08); border:1px solid #ddd;">
+      <button class="button is-small is-rounded" id="copy-bibtex-btn"
+        style="position:absolute; top:0.7em; right:0.7em; z-index:2;">
         <span class="icon is-small" style="color:#363636;">
           <i class="fas fa-copy"></i>
         </span>
       </button>
-      <pre style="white-space:pre-wrap; word-break:break-all; padding-top:2.2em; border-radius:8px; border:1px solid #eee; background:#fafbfc;">
-<code id="bibtex-code">@article{stevens2025highvolumerate3d,
+      <pre style="padding-top:2.2em; border-radius:8px;">
+<code id="bibtex-code" style="white-space: pre-wrap; word-wrap: break-word;">@article{stevens2025highvolumerate3d,
       title={High Volume Rate 3D Ultrasound Reconstruction with Diffusion Models},
-      author={Stevens, Tristan S. W. and Nolan, Oisín and Somphone, Oudom and Robert, Jean-Luc and van Sloun, Ruud J. G.},
+      author={Stevens, Tristan S. W. and Nolan, Oisín and Somphone, Oudom and Robert,
+              Jean-Luc and van Sloun, Ruud J. G.},
       year={2025},
       journal={IEEE Transactions on Medical Imaging},
       doi={10.1109/TMI.2025.3645849}
@@ -302,10 +298,9 @@
     </div>
   </div>
 </section>
-<!--End BibTex citation -->
 
 
-  <footer class="footer">
+<footer class="footer">
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-8">
