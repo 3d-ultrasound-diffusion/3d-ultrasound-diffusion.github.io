@@ -638,6 +638,27 @@ input[type="range"].slider::-moz-range-thumb:hover {
     flex-wrap: wrap !important;
     justify-content: center;
   }
+
+  /* Full width images on mobile */
+  #Framework .container.is-max-desktop > div,
+  #Uncertainty .container.is-max-desktop > div {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  #Framework img,
+  #Uncertainty img {
+    max-width: 100% !important;
+  }
+
+  /* Fix caption overlap on mobile */
+  #Framework .subtitle {
+    margin-top: 1rem !important;
+  }
+
+  #Uncertainty img {
+    padding: 0.5rem !important;
+  }
 }
 
 
