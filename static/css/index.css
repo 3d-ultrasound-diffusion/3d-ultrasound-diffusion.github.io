@@ -1,11 +1,16 @@
 body {
   font-family: 'Noto Sans', sans-serif;
+  background-color: #1a1a1a !important;
+  color: #e0e0e0 !important;
 }
 
+h1, h2, h3, h4, h5, h6, p, span, div, a {
+  color: inherit;
+}
 
 .footer .icon-link {
     font-size: 25px;
-    color: #000;
+    color: #e0e0e0;
 }
 
 .link-block a {
@@ -133,30 +138,24 @@ body {
   font-size: smaller;
 }
 
-/* Dark mode styles */
-body.dark-mode {
-  background-color: #1a1a1a;
-  color: #e0e0e0;
+.hero.is-light {
+  background-color: #2d2d2d !important;
 }
 
-body.dark-mode .hero.is-light {
-  background-color: #2d2d2d;
+.hero {
+  background-color: #1a1a1a !important;
 }
 
-body.dark-mode .hero {
-  background-color: #1a1a1a;
+#abstract {
+  background-color: #222222 !important;
 }
 
-body.dark-mode #abstract {
-  background-color: #222222;
+.title {
+  color: #ffffff !important;
 }
 
-body.dark-mode .title {
-  color: #ffffff;
-}
-
-body.dark-mode .subtitle {
-  color: #b0b0b0;
+.subtitle {
+  color: #b0b0b0 !important;
 }
 
 .subtitle {
@@ -165,164 +164,187 @@ body.dark-mode .subtitle {
   line-height: 1.5;
 }
 
-body.dark-mode .content {
-  color: #e0e0e0;
+.content {
+  color: #e0e0e0 !important;
 }
 
-body.dark-mode .content code {
-  background-color: #2d2d2d;
-  color: #e0e0e0;
+.content code {
+  background-color: #2d2d2d !important;
+  color: #e0e0e0 !important;
   padding: 0.2em 0.4em;
   border-radius: 3px;
 }
 
-body.dark-mode .content a {
-  color: #80b3ff;
+.content a {
+  color: #80b3ff !important;
   text-decoration: underline;
   text-decoration-color: rgba(128, 179, 255, 0.3);
 }
 
-body.dark-mode .content a:hover {
-  color: #aaccff;
+.content a:hover {
+  color: #aaccff !important;
   text-decoration-color: rgba(170, 204, 255, 0.5);
 }
 
-body.dark-mode .navbar {
-  background-color: #2d2d2d;
+.navbar {
+  background-color: #2d2d2d !important;
 }
 
-body.dark-mode .navbar-item,
-body.dark-mode .navbar-link {
-  color: #e0e0e0;
+.navbar-item,
+.navbar-link {
+  color: #e0e0e0 !important;
 }
 
-body.dark-mode .navbar-item:hover,
-body.dark-mode .navbar-link:hover {
-  background-color: #3d3d3d;
-  color: #ffffff;
+.navbar-item:hover,
+.navbar-link:hover {
+  background-color: #3d3d3d !important;
+  color: #ffffff !important;
 }
 
-body.dark-mode .navbar-link:focus,
-body.dark-mode .navbar-link:focus-within,
-body.dark-mode .navbar-link.is-active,
-body.dark-mode .navbar-item.has-dropdown:hover .navbar-link,
-body.dark-mode .navbar-item.has-dropdown.is-active .navbar-link {
-  background-color: #3d3d3d;
-  color: #ffffff;
+.navbar-link:focus,
+.navbar-link:focus-within,
+.navbar-link.is-active,
+.navbar-item.has-dropdown:hover .navbar-link,
+.navbar-item.has-dropdown.is-active .navbar-link {
+  background-color: #3d3d3d !important;
+  color: #ffffff !important;
 }
 
-body.dark-mode .navbar-dropdown {
-  background-color: #2d2d2d;
-  border-top: 1px solid #4d4d4d;
+.navbar-dropdown {
+  background-color: #2d2d2d !important;
+  border-top: 1px solid #4d4d4d !important;
 }
 
-body.dark-mode .navbar-dropdown .navbar-item {
-  color: #e0e0e0;
+.navbar-dropdown .navbar-item {
+  color: #e0e0e0 !important;
 }
 
-body.dark-mode .navbar-dropdown .navbar-item:hover {
-  background-color: #3d3d3d;
-  color: #ffffff;
+.navbar-dropdown .navbar-item:hover {
+  background-color: #3d3d3d !important;
+  color: #ffffff !important;
 }
 
-body.dark-mode .footer {
-  background-color: #2d2d2d;
-  color: #b0b0b0;
+.footer {
+  background-color: #2d2d2d !important;
+  color: #b0b0b0 !important;
 }
 
-body.dark-mode .footer a {
-  color: #80b3ff;
+.footer a {
+  color: #80b3ff !important;
 }
 
-body.dark-mode .footer a:hover {
-  color: #aaccff;
+.footer a:hover {
+  color: #aaccff !important;
 }
 
-body.dark-mode .section {
-  background-color: #1a1a1a;
+.section {
+  background-color: #1a1a1a !important;
 }
 
-body.dark-mode .select select {
+.select {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.select select {
   background-color: #2d2d2d;
   color: #e0e0e0;
   border-color: #4d4d4d;
+  height: auto;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  line-height: 1.5;
 }
 
-body.dark-mode .select select:hover {
+.select:not(.is-multiple):not(.is-loading)::after {
+  border-color: #80b3ff;
+  right: 1rem;
+  margin-top: -0.375em;
+}
+
+.select:hover:not(.is-multiple):not(.is-loading)::after {
+  border-color: #aaccff;
+}
+
+.select select:hover {
   border-color: #6d6d6d;
 }
 
-body.dark-mode pre {
+pre {
   background-color: #2d2d2d;
   color: #e0e0e0;
   border-color: #4d4d4d;
 }
 
-body.dark-mode pre code {
+pre code {
   background-color: #2d2d2d;
   color: #e0e0e0;
 }
 
-body.dark-mode #copy-bibtex-btn {
+#copy-bibtex-btn {
   background-color: #3d3d3d !important;
   border-color: #4d4d4d !important;
   color: #e0e0e0;
   box-shadow: 0 2px 8px rgba(255,255,255,0.08);
+  border: 1px solid #4d4d4d;
 }
 
-body.dark-mode #copy-bibtex-btn:hover {
+#copy-bibtex-btn:hover {
   background-color: #4d4d4d !important;
 }
 
-body.dark-mode #copy-bibtex-btn .icon {
+#copy-bibtex-btn .icon {
   color: #e0e0e0 !important;
 }
 
-#copy-bibtex-btn {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border: 1px solid #ddd;
-}
-
-#copy-bibtex-btn .icon {
-  color: #363636;
-}
-
-body.dark-mode .slider {
+.slider {
   background-color: #4d4d4d;
 }
 
-body.dark-mode .publication-authors a {
+.publication-authors a {
   color: #80b3ff !important;
 }
 
-body.dark-mode .publication-authors a:hover {
+.publication-authors a:hover {
   color: #aaccff !important;
+}
+
+/* Force dark theme for all button elements */
+.button {
+  background-color: #2d2d2d !important;
+  color: #e0e0e0 !important;
+  border-color: #4d4d4d !important;
+}
+
+.button:hover {
+  background-color: #3d3d3d !important;
+  border-color: #6d6d6d !important;
 }
 
 /* Comparison section styling */
 .comparison-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background-color: #2d2d2d;
-  border-radius: 8px;
-}
-
-body.dark-mode .comparison-controls {
   background-color: #222222;
+  padding: 1.5rem;
+  border-radius: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .control-group {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .control-group label {
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #e0e0e0;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .example-btn {
@@ -332,18 +354,30 @@ body.dark-mode .comparison-controls {
   border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   transition: all 0.2s;
 }
 
 .example-btn:hover {
   background-color: #4d4d4d;
+  border-color: #80b3ff;
 }
 
 .example-btn.active {
   background-color: #80b3ff;
   color: #1a1a1a;
   border-color: #80b3ff;
+}
+
+.control-group .select select {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.control-group span {
+  font-size: 0.95rem;
+  color: #e0e0e0;
 }
 
 #frame-slider {
@@ -581,22 +615,6 @@ input[type="range"].slider::-moz-range-thumb:hover {
 
 .comparison-handle:hover .jx-arrow.jx-right {
     border-color: transparent transparent transparent #80b3ff;
-}
-
-/* Dark mode for juxtapose labels (fallback) */
-body.dark-mode .jx-controller .jx-arrow,
-body.dark-mode .jx-handle {
-  background-color: #80b3ff;
-}
-
-body.dark-mode .jx-controller .jx-arrow:hover,
-body.dark-mode .jx-handle:hover {
-  background-color: #aaccff;
-}
-
-body.dark-mode .jx-image-label {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: #e0e0e0;
 }
 
 @media screen and (max-width: 768px) {
